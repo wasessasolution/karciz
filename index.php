@@ -20,7 +20,7 @@ $past_events = $conn->query("SELECT * FROM events WHERE status='selesai'");
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Karciz - Landing Page</title>
-  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="/Karciz/assets/css/style.css?v=1">
 </head>
 <body>
 

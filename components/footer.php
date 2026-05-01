@@ -14,7 +14,7 @@
       <ul>
         <li><a href="#">Tentang Kami</a></li>
         <li><a href="#">Harga Layanan</a></li>
-        <li><a href="#">Jadi Promotor</a></li>
+        <a href="/Karciz/register-promotor.php">Jadi Promotor</a>
       </ul>
     </div>
 

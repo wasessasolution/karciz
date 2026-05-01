@@ -3,18 +3,33 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-include __DIR__ . '/../config.php';
+require_once __DIR__ . '/../config.php';
 
 $user_data = null;
+$role = $_SESSION['role'] ?? null;
 
-if (isset($_SESSION['user'])) {
+if (!empty($_SESSION['user'])) {
     $username = $_SESSION['user'];
 
-    $stmt = $conn->prepare("SELECT * FROM users WHERE username=?");
-    $stmt->bind_param("s", $username);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $user_data = $result->fetch_assoc();
+    if ($stmt = $conn->prepare("SELECT username, profile_image FROM users WHERE username=? LIMIT 1")) {
+        $stmt->bind_param("s", $username);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $user_data = $result->fetch_assoc();
+        $stmt->close();
+    }
+}
+
+// default fallback
+$profile_img = 'default-profile.png';
+$username_display = 'Guest';
+
+if ($user_data) {
+    $profile_img = !empty($user_data['profile_image']) 
+        ? $user_data['profile_image'] 
+        : 'default-profile.png';
+
+    $username_display = $user_data['username'] ?? 'Guest';
 }
 ?>
 
@@ -34,24 +49,36 @@ if (isset($_SESSION['user'])) {
     <!-- RIGHT -->
     <div class="nav-right">
 
-      <a href="/Karciz/customer/history_transaksi.php" class="my-karciz">
-        My KarciZ
-      </a>
+      <?php if ($role !== 'superadmin') { ?>
+        <a href="/Karciz/customer/history_transaksi.php" class="my-karciz">
+          My KarciZ
+        </a>
+      <?php } ?>
 
-      <!-- PROFILE -->
       <?php if ($user_data) { ?>
-        <a href="/Karciz/customer/profile.php" class="profile-user">
+        <div class="profile-user" id="profileToggle">
 
           <img 
-            src="/Karciz/assets/images/profile/<?=
-              $user_data['profile_image'] ? $user_data['profile_image'] : 'default-profile.png'
-            ?>"
-            alt="Profile User"
+            src="/Karciz/assets/images/profile/<?= htmlspecialchars($profile_img) ?>"
+            alt="Profile"
           />
 
-          <span><?= $user_data['username']; ?></span>
+          <span><?= htmlspecialchars($username_display) ?></span>
 
-        </a>
+          <!-- DROPDOWN -->
+          <div class="dropdown-menu" id="profileDropdown">
+
+            <?php if ($role !== 'superadmin') { ?>
+              <a href="/Karciz/customer/profile.php">Edit Profile</a>
+              <a href="/Karciz/customer/history_transaksi.php">My Ticket</a>
+            <?php } ?>
+
+            <!-- logout tetap ada -->
+            <a href="/Karciz/logout.php" class="logout">Logout</a>
+
+          </div>
+
+        </div>
       <?php } else { ?>
         <a href="/Karciz/login.php">Login</a>
       <?php } ?>
@@ -60,3 +87,24 @@ if (isset($_SESSION['user'])) {
 
   </div>
 </header>
+
+<!-- JS DROPDOWN -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+  const toggle = document.getElementById("profileToggle");
+  const dropdown = document.getElementById("profileDropdown");
+
+  if (!toggle || !dropdown) return;
+
+  toggle.addEventListener("click", function (e) {
+    e.stopPropagation();
+    dropdown.classList.toggle("show");
+  });
+
+  document.addEventListener("click", function () {
+    dropdown.classList.remove("show");
+  });
+
+});
+</script>

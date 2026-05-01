@@ -41,10 +41,8 @@ $username = $_SESSION['user'];
       <h3>Dashboard</h3>
 
       <div class="user-info">
-        <span>👤 <?php echo $username; ?></span>
-            <a href="/Karciz/logout.php" class="logout-btn">Logout</a>>
-          <button class="logout-btn">Logout</button>
-        </a>
+        <span>👤 <?= htmlspecialchars($username); ?></span>
+        <a href="/Karciz/logout.php" class="logout-btn">Logout</a>
       </div>
     </div>
 
