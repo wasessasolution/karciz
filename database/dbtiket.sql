@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 01 Bulan Mei 2026 pada 18.43
+-- Waktu pembuatan: 01 Bulan Mei 2026 pada 20.42
 -- Versi server: 10.4.32-MariaDB
 -- Versi PHP: 8.2.12
 
@@ -134,6 +134,16 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
+-- Dumping data untuk tabel `users`
+--
+
+INSERT INTO `users` (`id`, `username`, `email`, `password`, `no_whatsapp`, `role`, `created_at`, `profile_image`) VALUES
+(5, 'superadmin1', 'superadmin1@karciz.com', '$2y$10$zuK53FJcAZYdMvS1ZK5VKuGS6OngHBWxkk52emwnqCAbKDB8syLza', '08123456789', 'superadmin', '2026-05-01 17:39:49', NULL),
+(6, 'testing', 'testing@gmail.com', '$2y$10$Y.xPfMLhE/iu8oXEPKu4ceCjNGxtaElsROj1RLO8GoHSmRlsATfYO', '123', 'customer', '2026-05-01 17:48:13', NULL),
+(7, 'Testing Promotor', 'testingp@gmail.com', '$2y$10$nZwiN4SVCY.3ot1P30wDkuBVi0hBKEsNGLolf.HQ5.tcxgMZ.guxO', '123', 'organizer', '2026-05-01 17:53:31', NULL),
+(8, 'cikua', 'cikua@gmail.com', '$2y$10$3QgNRtBCmBBwiBpdG0wLGuKi/oK9XTi7iBUHNyArBkUk07RF/07Xi', '123', 'organizer', '2026-05-01 18:03:06', NULL);
+
+--
 -- Indexes for dumped tables
 --
 
@@ -226,7 +236,7 @@ ALTER TABLE `tickets`
 -- AUTO_INCREMENT untuk tabel `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)
