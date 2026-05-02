@@ -1,132 +1,113 @@
 <?php
 session_start();
-require_once 'config.php';
+include 'config.php';
+
+if (!isset($_SESSION['user'])) {
+    header("Location: login.php");
+    exit;
+}
+
+$username_login = $_SESSION['user'];
+
+$stmtUser = $conn->prepare("SELECT id, username, email, no_whatsapp FROM users WHERE username=? LIMIT 1");
+$stmtUser->bind_param("s", $username_login);
+$stmtUser->execute();
+$user = $stmtUser->get_result()->fetch_assoc();
+
+if (!$user) {
+    header("Location: login.php");
+    exit;
+}
 
 $message = "";
 $success = "";
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-    $username  = trim($_POST['username']);
-    $email     = trim($_POST['email']);
-    $password  = password_hash($_POST['password'], PASSWORD_DEFAULT);
-    $whatsapp  = trim($_POST['no_whatsapp']);
+    $user_id = $user['id'];
+    $nama_brand = trim($_POST['nama_brand']);
+    $deskripsi_singkat = trim($_POST['deskripsi_singkat']);
+    $email_bisnis = trim($_POST['email_bisnis']);
+    $no_wa = trim($_POST['no_wa']);
 
-    // cek email
-    $check = $conn->prepare("SELECT id FROM users WHERE email=?");
-    $check->bind_param("s", $email);
+    // cek apakah user sudah pernah daftar promotor
+    $check = $conn->prepare("SELECT id FROM promotor WHERE user_id=? LIMIT 1");
+    $check->bind_param("i", $user_id);
     $check->execute();
-    $check->store_result();
+    $checkResult = $check->get_result();
 
-    if ($check->num_rows > 0) {
-        $message = "Email sudah digunakan!";
+    if ($checkResult->num_rows > 0) {
+        $message = "Anda sudah pernah mendaftar sebagai promotor.";
     } else {
 
+        $logo = "";
+        $banner = "";
+
         $stmt = $conn->prepare("
-            INSERT INTO users (username, email, password, no_whatsapp, role, created_at)
-            VALUES (?, ?, ?, ?, 'organizer', NOW())
+            INSERT INTO promotor 
+            (user_id, nama_brand, deskripsi_singkat, email_bisnis, no_wa, logo, banner, status)
+            VALUES (?, ?, ?, ?, ?, ?, ?, 'pending')
         ");
-        $stmt->bind_param("ssss", $username, $email, $password, $whatsapp);
+
+        $stmt->bind_param(
+            "issssss",
+            $user_id,
+            $nama_brand,
+            $deskripsi_singkat,
+            $email_bisnis,
+            $no_wa,
+            $logo,
+            $banner
+        );
 
         if ($stmt->execute()) {
-            $success = "Register berhasil, menunggu verifikasi admin";
-            $_POST = []; // reset form
+            $success = "Pendaftaran promotor berhasil. Menunggu verifikasi admin.";
         } else {
-            $message = "Terjadi kesalahan saat menyimpan data!";
+            $message = "Gagal mendaftar promotor.";
         }
     }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <title>Daftar Promotor - KarciZ</title>
-
-  <!-- CSS GLOBAL -->
-  <link rel="stylesheet" href="assets/css/style.css">
+    <meta charset="UTF-8">
+    <title>Daftar Promotor - KarciZ</title>
+    <link rel="stylesheet" href="/Karciz/assets/css/style.css">
 </head>
 <body>
 
-<!-- NAVBAR -->
 <?php include __DIR__ . '/components/navbar.php'; ?>
 
-<!-- MAIN CONTENT -->
 <main>
+    <div class="register-container">
+        <h2>Daftar Jadi Promotor</h2>
+        <p>Lengkapi data brand atau organisasi event Anda.</p>
 
-  <div class="register-container">
+        <?php if ($success): ?>
+            <div class="popup-success"><?= htmlspecialchars($success); ?></div>
+        <?php endif; ?>
 
-    <h2>Daftar Jadi Promotor</h2>
-    <p>Isi data untuk menjadi promotor event di KarciZ</p>
+        <?php if ($message): ?>
+            <p class="error-msg"><?= htmlspecialchars($message); ?></p>
+        <?php endif; ?>
 
-    <!-- SUCCESS POPUP -->
-    <?php if ($success): ?>
-      <div class="popup-success">
-        <?= htmlspecialchars($success); ?>
-      </div>
-    <?php endif; ?>
+        <form method="POST">
+            <input type="text" name="nama_brand" placeholder="Nama Brand / Organizer" required>
 
-    <!-- ERROR -->
-    <?php if ($message): ?>
-      <p class="error-msg"><?= htmlspecialchars($message); ?></p>
-    <?php endif; ?>
+            <input type="text" name="deskripsi_singkat" placeholder="Deskripsi singkat promotor" required>
 
-    <!-- FORM -->
-    <form method="POST">
+            <input type="email" name="email_bisnis" placeholder="Email bisnis" value="<?= htmlspecialchars($user['email']); ?>" required>
 
-      <input 
-        type="text" 
-        name="username" 
-        placeholder="Username" 
-        value="<?= htmlspecialchars($_POST['username'] ?? '') ?>"
-        required
-      >
+            <input type="text" name="no_wa" placeholder="No WhatsApp" value="<?= htmlspecialchars($user['no_whatsapp']); ?>" required>
 
-      <input 
-        type="email" 
-        name="email" 
-        placeholder="Email"
-        value="<?= htmlspecialchars($_POST['email'] ?? '') ?>"
-        required
-      >
-
-      <input 
-        type="text" 
-        name="no_whatsapp" 
-        placeholder="No WhatsApp"
-        value="<?= htmlspecialchars($_POST['no_whatsapp'] ?? '') ?>"
-        required
-      >
-
-      <input 
-        type="password" 
-        name="password" 
-        placeholder="Password" 
-        required
-      >
-
-      <button type="submit">Daftar Promotor</button>
-
-    </form>
-
-  </div>
-
+            <button type="submit">Daftar Promotor</button>
+        </form>
+    </div>
 </main>
 
-<!-- FOOTER -->
 <?php include __DIR__ . '/components/footer.php'; ?>
-
-<!-- AUTO HIDE POPUP -->
-<script>
-setTimeout(() => {
-  const popup = document.querySelector(".popup-success");
-  if (popup) {
-    popup.style.opacity = "0";
-    popup.style.transform = "translateY(-10px)";
-    setTimeout(() => popup.remove(), 500);
-  }
-}, 3000);
-</script>
 
 </body>
 </html>

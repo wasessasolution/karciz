@@ -166,3 +166,19 @@ table th {
 .btn-delete:hover {
   background: #c23616;
 }
+.btn-approve {
+  background: green;
+  color: white;
+  padding: 6px 10px;
+  border-radius: 6px;
+  text-decoration: none;
+  margin-right: 5px;
+}
+
+.btn-reject {
+  background: red;
+  color: white;
+  padding: 6px 10px;
+  border-radius: 6px;
+  text-decoration: none;
+}

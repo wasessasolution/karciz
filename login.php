@@ -9,13 +9,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = trim($_POST['username']);
     $password = $_POST['password'];
 
-    // Validasi sederhana
     if (empty($username) || empty($password)) {
         $error = "Username dan password wajib diisi!";
     } else {
 
-        // Ambil user (AMAN)
-        $stmt = $conn->prepare("SELECT * FROM users WHERE username = ?");
+        $stmt = $conn->prepare("SELECT * FROM users WHERE username = ? LIMIT 1");
         $stmt->bind_param("s", $username);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -24,30 +22,34 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             $user = $result->fetch_assoc();
 
-            // 🔥 DEBUG (sementara, bisa dihapus nanti)
-            // echo $user['password']; exit;
-
-            // Verifikasi password hash
-            if (password_verify($password, $user['password'])) {
-
-                // Regenerate session (security)
-                session_regenerate_id(true);
-
-                $_SESSION['user'] = $user['username'];
-                $_SESSION['role'] = $user['role'];
-
-                // Redirect sesuai role
-                if ($user['role'] === 'superadmin') {
-                    header("Location: super-admin/dashboard.php");
-                } elseif ($user['role'] === 'organizer') {
-                    header("Location: organizer/dashboard.php");
-                } else {
-                    header("Location: index.php");
-                }
-                exit;
-
-            } else {
+            if (!password_verify($password, $user['password'])) {
                 $error = "Password salah!";
+            } else {
+
+                // BLOK ORGANIZER YANG BELUM APPROVED
+                if (
+                    $user['role'] === 'organizer' &&
+                    isset($user['status']) &&
+                    $user['status'] !== 'approved'
+                ) {
+                    $error = "Akun promotor Anda belum diverifikasi admin!";
+                } else {
+
+                    session_regenerate_id(true);
+
+                    $_SESSION['user'] = $user['username'];
+                    $_SESSION['role'] = $user['role'];
+                    $_SESSION['user_id'] = $user['id'];
+
+                    if ($user['role'] === 'superadmin') {
+                        header("Location: super-admin/dashboard.php");
+                    } elseif ($user['role'] === 'organizer') {
+                        header("Location: organizer/dashboard.php");
+                    } else {
+                        header("Location: index.php");
+                    }
+                    exit;
+                }
             }
 
         } else {

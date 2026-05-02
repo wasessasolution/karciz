@@ -20,7 +20,7 @@ $past_events = $conn->query("SELECT * FROM events WHERE status='selesai'");
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Karciz - Landing Page</title>
-  <link rel="stylesheet" href="/Karciz/assets/css/style.css?v=1">
+  <link rel="stylesheet" href="/Karciz/assets/css/style.css?v=2">
 </head>
 <body>
 
@@ -49,21 +49,30 @@ $past_events = $conn->query("SELECT * FROM events WHERE status='selesai'");
         <?php if ($events->num_rows > 0) { ?>
           <?php while($row = $events->fetch_assoc()) { ?>
 
-            <div class="event-card">
-              <h3><?= htmlspecialchars($row['nama_event']); ?></h3>
-              <p>
-                <?= htmlspecialchars($row['lokasi']); ?> • 
-                <?= date('d M Y', strtotime($row['tanggal'])); ?>
-              </p>
+          <div class="event-card">
 
-              <div style="margin-top:16px;">
-                <a href="customer/event-detail.php?id=<?= $row['id']; ?>" 
-                   class="btn-login"
-                   style="display:block; text-align:center;">
-                  Beli Tiket
-                </a>
-              </div>
-            </div>
+            <?php if (!empty($row['banner'])) { ?>
+              <img 
+                src="/Karciz/assets/images/events/<?= htmlspecialchars($row['banner']); ?>" 
+                alt="<?= htmlspecialchars($row['nama_event']); ?>"
+                class="event-banner"
+              >
+            <?php } else { ?>
+              <div class="event-banner empty-banner">No Banner</div>
+            <?php } ?>
+
+            <h3><?= htmlspecialchars($row['nama_event']); ?></h3>
+
+            <p>
+              <?= htmlspecialchars($row['lokasi']); ?> • 
+              <?= date('d M Y', strtotime($row['tanggal'])); ?>
+            </p>
+
+            <a href="customer/event-detail.php?id=<?= $row['id']; ?>" class="btn-login">
+              Beli Tiket
+            </a>
+
+          </div>
 
           <?php } ?>
         <?php } else { ?>

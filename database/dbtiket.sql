@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 01 Bulan Mei 2026 pada 20.42
+-- Waktu pembuatan: 02 Bulan Mei 2026 pada 23.20
 -- Versi server: 10.4.32-MariaDB
 -- Versi PHP: 8.2.12
 
@@ -38,6 +38,14 @@ CREATE TABLE `events` (
   `status` enum('aktif','selesai') DEFAULT 'aktif',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data untuk tabel `events`
+--
+
+INSERT INTO `events` (`id`, `organizer_id`, `nama_event`, `lokasi`, `tanggal`, `deskripsi`, `banner`, `status`, `created_at`) VALUES
+(1, 1, 'Futsal Testing 1', 'Padang', '2026-05-06', 'Testing Gan', '1777751683_69f65683a7ea7.png', 'aktif', '2026-05-02 19:54:43'),
+(2, 1, 'Futsal Testing 2', 'Jakarta', '2026-05-05', 'testing', '1777754937_69f663392def9.png', 'aktif', '2026-05-02 20:48:57');
 
 -- --------------------------------------------------------
 
@@ -93,13 +101,23 @@ CREATE TABLE `pemesan` (
 
 CREATE TABLE `promotor` (
   `id` int(100) NOT NULL,
+  `user_id` int(11) DEFAULT NULL,
   `nama_brand` varchar(255) NOT NULL,
   `deskripsi_singkat` varchar(500) NOT NULL,
   `email_bisnis` varchar(255) NOT NULL,
   `no_wa` int(25) NOT NULL,
   `logo` varchar(255) NOT NULL,
-  `banner` varchar(255) NOT NULL
+  `banner` varchar(255) NOT NULL,
+  `status` enum('pending','approved','rejected') DEFAULT 'pending',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data untuk tabel `promotor`
+--
+
+INSERT INTO `promotor` (`id`, `user_id`, `nama_brand`, `deskripsi_singkat`, `email_bisnis`, `no_wa`, `logo`, `banner`, `status`, `created_at`) VALUES
+(1, 6, 'promotor1', 'Promotor 1', 'testing@gmail.com', 123, '', '', 'approved', '2026-05-02 19:47:22');
 
 -- --------------------------------------------------------
 
@@ -130,18 +148,18 @@ CREATE TABLE `users` (
   `no_whatsapp` varchar(20) DEFAULT NULL,
   `role` varchar(20) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `profile_image` varchar(255) DEFAULT NULL
+  `profile_image` varchar(255) DEFAULT NULL,
+  `status` enum('pending','approved','rejected') DEFAULT 'pending'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data untuk tabel `users`
 --
 
-INSERT INTO `users` (`id`, `username`, `email`, `password`, `no_whatsapp`, `role`, `created_at`, `profile_image`) VALUES
-(5, 'superadmin1', 'superadmin1@karciz.com', '$2y$10$zuK53FJcAZYdMvS1ZK5VKuGS6OngHBWxkk52emwnqCAbKDB8syLza', '08123456789', 'superadmin', '2026-05-01 17:39:49', NULL),
-(6, 'testing', 'testing@gmail.com', '$2y$10$Y.xPfMLhE/iu8oXEPKu4ceCjNGxtaElsROj1RLO8GoHSmRlsATfYO', '123', 'customer', '2026-05-01 17:48:13', NULL),
-(7, 'Testing Promotor', 'testingp@gmail.com', '$2y$10$nZwiN4SVCY.3ot1P30wDkuBVi0hBKEsNGLolf.HQ5.tcxgMZ.guxO', '123', 'organizer', '2026-05-01 17:53:31', NULL),
-(8, 'cikua', 'cikua@gmail.com', '$2y$10$3QgNRtBCmBBwiBpdG0wLGuKi/oK9XTi7iBUHNyArBkUk07RF/07Xi', '123', 'organizer', '2026-05-01 18:03:06', NULL);
+INSERT INTO `users` (`id`, `username`, `email`, `password`, `no_whatsapp`, `role`, `created_at`, `profile_image`, `status`) VALUES
+(5, 'superadmin1', 'superadmin1@karciz.com', '$2y$10$zuK53FJcAZYdMvS1ZK5VKuGS6OngHBWxkk52emwnqCAbKDB8syLza', '08123456789', 'superadmin', '2026-05-01 17:39:49', NULL, 'pending'),
+(6, 'testing', 'testing@gmail.com', '$2y$10$Y.xPfMLhE/iu8oXEPKu4ceCjNGxtaElsROj1RLO8GoHSmRlsATfYO', '123', 'organizer', '2026-05-01 17:48:13', NULL, 'approved'),
+(10, 'customer', 'customer@gmail.com', '$2y$10$59tKRDlni98rsQBcyQze.u/GvT/j8eVwIl7Rjoz9gWffGTCbJuLBm', '123', 'customer', '2026-05-02 19:55:07', NULL, 'pending');
 
 --
 -- Indexes for dumped tables
@@ -200,7 +218,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT untuk tabel `events`
 --
 ALTER TABLE `events`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT untuk tabel `event_baru`
@@ -224,7 +242,7 @@ ALTER TABLE `pemesan`
 -- AUTO_INCREMENT untuk tabel `promotor`
 --
 ALTER TABLE `promotor`
-  MODIFY `id` int(100) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT untuk tabel `tickets`
@@ -236,7 +254,7 @@ ALTER TABLE `tickets`
 -- AUTO_INCREMENT untuk tabel `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)
