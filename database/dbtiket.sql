@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 02 Bulan Mei 2026 pada 23.20
+-- Waktu pembuatan: 05 Bulan Mei 2026 pada 10.17
 -- Versi server: 10.4.32-MariaDB
 -- Versi PHP: 8.2.12
 
@@ -134,6 +134,43 @@ CREATE TABLE `tickets` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data untuk tabel `tickets`
+--
+
+INSERT INTO `tickets` (`id`, `event_id`, `nama_tiket`, `harga`, `stok`, `created_at`) VALUES
+(1, 2, 'VIP', 25000, 0, '2026-05-05 07:16:07'),
+(2, 2, 'Pre-Sale', 15000, 20, '2026-05-05 07:16:34');
+
+-- --------------------------------------------------------
+
+--
+-- Struktur dari tabel `transactions`
+--
+
+CREATE TABLE `transactions` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `event_id` int(11) NOT NULL,
+  `ticket_id` int(11) NOT NULL,
+  `qty` int(11) NOT NULL,
+  `gross_total` int(11) DEFAULT NULL,
+  `platform_fee` int(11) DEFAULT NULL,
+  `promoter_income` int(11) DEFAULT NULL,
+  `total` int(11) NOT NULL,
+  `payment_method` varchar(50) DEFAULT NULL,
+  `payment_detail` varchar(100) DEFAULT NULL,
+  `status` enum('pending','paid','failed') DEFAULT 'paid',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data untuk tabel `transactions`
+--
+
+INSERT INTO `transactions` (`id`, `user_id`, `event_id`, `ticket_id`, `qty`, `gross_total`, `platform_fee`, `promoter_income`, `total`, `payment_method`, `payment_detail`, `status`, `created_at`) VALUES
+(1, 10, 2, 1, 50, NULL, NULL, NULL, 1250000, 'bank', 'OVO', 'paid', '2026-05-05 07:58:51');
+
 -- --------------------------------------------------------
 
 --
@@ -203,6 +240,12 @@ ALTER TABLE `tickets`
   ADD KEY `event_id` (`event_id`);
 
 --
+-- Indeks untuk tabel `transactions`
+--
+ALTER TABLE `transactions`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indeks untuk tabel `users`
 --
 ALTER TABLE `users`
@@ -248,7 +291,13 @@ ALTER TABLE `promotor`
 -- AUTO_INCREMENT untuk tabel `tickets`
 --
 ALTER TABLE `tickets`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT untuk tabel `transactions`
+--
+ALTER TABLE `transactions`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT untuk tabel `users`
