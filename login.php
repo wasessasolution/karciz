@@ -10,11 +10,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = $_POST['password'];
 
     if (empty($username) || empty($password)) {
-        $error = "Username dan password wajib diisi!";
+        $error = "Username/email dan password wajib diisi!";
     } else {
 
-        $stmt = $conn->prepare("SELECT * FROM users WHERE username = ? LIMIT 1");
-        $stmt->bind_param("s", $username);
+        $stmt = $conn->prepare("
+            SELECT * FROM users 
+            WHERE username = ? OR email = ?
+            LIMIT 1
+        ");
+        $stmt->bind_param("ss", $username, $username);
         $stmt->execute();
         $result = $stmt->get_result();
 
@@ -22,38 +26,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             $user = $result->fetch_assoc();
 
-            if (!password_verify($password, $user['password'])) {
-                $error = "Password salah!";
-            } else {
+            if (password_verify($password, $user['password'])) {
 
-                // BLOK ORGANIZER YANG BELUM APPROVED
-                if (
-                    $user['role'] === 'organizer' &&
-                    isset($user['status']) &&
-                    $user['status'] !== 'approved'
-                ) {
-                    $error = "Akun promotor Anda belum diverifikasi admin!";
+                session_regenerate_id(true);
+
+                $_SESSION['user'] = $user['username'];
+                $_SESSION['role'] = $user['role'];
+
+                if ($user['role'] === 'superadmin') {
+                    header("Location: super-admin/dashboard.php");
+                } elseif ($user['role'] === 'organizer') {
+                    header("Location: organizer/dashboard.php");
                 } else {
-
-                    session_regenerate_id(true);
-
-                    $_SESSION['user'] = $user['username'];
-                    $_SESSION['role'] = $user['role'];
-                    $_SESSION['user_id'] = $user['id'];
-
-                    if ($user['role'] === 'superadmin') {
-                        header("Location: super-admin/dashboard.php");
-                    } elseif ($user['role'] === 'organizer') {
-                        header("Location: organizer/dashboard.php");
-                    } else {
-                        header("Location: index.php");
-                    }
-                    exit;
+                    header("Location: index.php");
                 }
+                exit;
+
+            } else {
+                $error = "Password salah!";
             }
 
         } else {
-            $error = "Username tidak ditemukan!";
+            $error = "Username/email tidak ditemukan!";
         }
     }
 }

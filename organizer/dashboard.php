@@ -61,9 +61,9 @@ $eventSelesai = $stmt->get_result()->fetch_assoc()['total'];
     <div class="organizer-sidebar">
         <h2>KarciZ Promotor</h2>
         <a href="dashboard.php" class="active">Dashboard</a>
+        <a href="/Karciz/index.php">Ke Beranda</a>
         <a href="create-event.php">Buat Event</a>
         <a href="manage-event.php">Kelola Event</a>
-        <a href="ticket-management.php">Manajemen Tiket</a>
         <a href="sales-report.php">Laporan Penjualan</a>
         <a href="../logout.php">Logout</a>
     </div>

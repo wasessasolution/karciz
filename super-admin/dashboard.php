@@ -25,12 +25,14 @@ $username = $_SESSION['user'];
   <div class="sidebar">
     <h2>KarciZ Admin</h2>
 
-    <a href="./dashboard.php">Dashboard</a>
-    <a href="./manage-users.php">Kelola User</a>
-    <a href="./verify-organizer.php">Verifikasi Organizer</a>
-    <a href="./all-events.php">Semua Event</a>
-    <a href="./transactions.php">Transaksi</a>
-    <a href="./reports.php">Laporan</a>
+    <a href="dashboard.php" class="active">Dashboard</a>
+    <a href="/Karciz/index.php">Ke Beranda</a>
+    <a href="manage-users.php">Kelola User</a>
+    <a href="verify-organizer.php">Verifikasi Organizer</a>
+    <a href="all-events.php">Semua Event</a>
+    <a href="transactions.php">Transaksi</a>
+    <a href="reports.php">Laporan</a>
+    <a href="../logout.php">Logout</a>
   </div>
 
   <!-- MAIN -->
