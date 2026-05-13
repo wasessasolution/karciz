@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 05 Bulan Mei 2026 pada 10.17
+-- Waktu pembuatan: 13 Bulan Mei 2026 pada 22.49
 -- Versi server: 10.4.32-MariaDB
 -- Versi PHP: 8.2.12
 
@@ -194,9 +194,9 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `username`, `email`, `password`, `no_whatsapp`, `role`, `created_at`, `profile_image`, `status`) VALUES
-(5, 'superadmin1', 'superadmin1@karciz.com', '$2y$10$zuK53FJcAZYdMvS1ZK5VKuGS6OngHBWxkk52emwnqCAbKDB8syLza', '08123456789', 'superadmin', '2026-05-01 17:39:49', NULL, 'pending'),
 (6, 'testing', 'testing@gmail.com', '$2y$10$Y.xPfMLhE/iu8oXEPKu4ceCjNGxtaElsROj1RLO8GoHSmRlsATfYO', '123', 'organizer', '2026-05-01 17:48:13', NULL, 'approved'),
-(10, 'customer', 'customer@gmail.com', '$2y$10$59tKRDlni98rsQBcyQze.u/GvT/j8eVwIl7Rjoz9gWffGTCbJuLBm', '123', 'customer', '2026-05-02 19:55:07', NULL, 'pending');
+(10, 'customer', 'customer@gmail.com', '$2y$10$59tKRDlni98rsQBcyQze.u/GvT/j8eVwIl7Rjoz9gWffGTCbJuLBm', '123', 'customer', '2026-05-02 19:55:07', NULL, 'pending'),
+(11, 'superadmin1', 'superadmin1@karciz.com', '$2y$10$4sO.vOcI7TGM/l6Ks09.OOZR4bPzMqrhQyMHPvfL4P7xsmLdCxTRm', '08123456789', 'superadmin', '2026-05-13 20:22:16', NULL, 'pending');
 
 --
 -- Indexes for dumped tables
@@ -303,7 +303,7 @@ ALTER TABLE `transactions`
 -- AUTO_INCREMENT untuk tabel `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)
