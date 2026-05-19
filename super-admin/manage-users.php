@@ -1,6 +1,7 @@
 <?php
 session_start();
 include '../config.php';
+require_once __DIR__ . '/../lang/lang.php';
 
 // 🔐 PROTEKSI
 if (!isset($_SESSION['user']) || $_SESSION['role'] != 'superadmin') {
@@ -30,22 +31,15 @@ $result = $conn->query("SELECT * FROM users ORDER BY id DESC");
 <head>
   <meta charset="UTF-8">
   <title>Kelola User - KarciZ</title>
-  <link rel="stylesheet" href="../assets/css/superadmin.css">
+  <link rel="stylesheet" href="/Karciz/assets/css/superadmin.css?v=1">
+  <link rel="stylesheet" href="/Karciz/assets/css/superadmin-premium.css?v=2">
 </head>
 <body>
 
 <div class="wrapper">
 
   <!-- SIDEBAR -->
-    <div class="sidebar">
-        <h2>KarciZ Admin</h2>
-        <a href="dashboard.php">Dashboard</a>
-        <a href="manage-users.php">Kelola User</a>
-        <a href="verify-organizer.php">Verifikasi Organizer</a>
-        <a href="all-events.php">Semua Event</a>
-        <a href="transactions.php">Transaksi</a>
-        <a href="reports.php">Laporan</a>
-    </div>
+  <?php include 'sidebar.php'; ?>
 
   <!-- MAIN -->
   <div class="main">

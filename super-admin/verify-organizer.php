@@ -1,6 +1,7 @@
 <?php
 session_start();
 include '../config.php';
+require_once __DIR__ . '/../lang/lang.php';
 
 if (!isset($_SESSION['user']) || $_SESSION['role'] != 'superadmin') {
     header("Location: ../login.php");
@@ -27,21 +28,14 @@ $result = $conn->query("
 <html>
 <head>
     <title>Verifikasi Promotor</title>
-    <link rel="stylesheet" href="../assets/css/superadmin.css">
+    <link rel="stylesheet" href="/Karciz/assets/css/superadmin.css?v=1">
+    <link rel="stylesheet" href="/Karciz/assets/css/superadmin-premium.css?v=2">
 </head>
 <body>
 
 <div class="wrapper">
 
-    <div class="sidebar">
-        <h2>KarciZ Admin</h2>
-        <a href="dashboard.php">Dashboard</a>
-        <a href="manage-users.php">Kelola User</a>
-        <a href="verify-organizer.php" class="active">Verifikasi Organizer</a>
-        <a href="all-events.php">Semua Event</a>
-        <a href="transactions.php">Transaksi</a>
-        <a href="reports.php">Laporan</a>
-    </div>
+<?php include 'sidebar.php'; ?>
 
     <div class="main">
         <div class="topbar">

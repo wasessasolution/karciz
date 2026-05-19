@@ -1,6 +1,7 @@
 <?php
 session_start();
 include '../config.php';
+require_once __DIR__ . '/../lang/lang.php';
 
 if (!isset($_SESSION['user']) || $_SESSION['role'] != 'organizer') {
     header("Location: ../login.php");
@@ -110,22 +111,14 @@ $tickets = $stmt->get_result();
 <head>
     <meta charset="UTF-8">
     <title>Manajemen Tiket - KarciZ</title>
-    <link rel="stylesheet" href="/Karciz/assets/css/organizer.css?v=4">
+    <link rel="stylesheet" href="/Karciz/assets/css/organizer.css?v=10">
+    <link rel="stylesheet" href="/Karciz/assets/css/organizer-premium.css?v=1">
 </head>
 <body>
 
 <div class="organizer-wrapper">
 
-    <div class="organizer-sidebar">
-        <h2>KarciZ Promotor</h2>
-        <a href="dashboard.php">Dashboard</a>
-        <a href="create-event.php">Buat Event</a>
-        <a href="manage-event.php">Kelola Event</a>
-        <a href="ticket-management.php" class="active">Manajemen Tiket</a>
-        <a href="sales-report.php">Laporan Penjualan</a>
-        <a href="../logout.php">Logout</a>
-    </div>
-
+    <?php include 'sidebar.php'; ?>
     <div class="organizer-main">
 
         <div class="organizer-topbar">

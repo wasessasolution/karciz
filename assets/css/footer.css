@@ -1,0 +1,157 @@
+/* ===============================
+   KARCIZ PREMIUM FOOTER
+================================ */
+
+.premium-footer {
+  margin-top: 80px;
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at top left, rgba(245,158,11,.24), transparent 28%),
+    radial-gradient(circle at bottom right, rgba(245,158,11,.18), transparent 26%),
+    linear-gradient(135deg, #050816 0%, #0f172a 52%, #1c1230 100%);
+  color: #fff;
+  border-top: 1px solid rgba(245,178,27,.25);
+}
+
+.premium-footer::before {
+  content: "🎟  ★  🎫  K  ♫  🎤  ✦  🎟  K  ★";
+  position: absolute;
+  inset: 0;
+  color: rgba(245,178,27,.08);
+  font-size: 44px;
+  font-weight: 900;
+  letter-spacing: 38px;
+  line-height: 2.8;
+  transform: rotate(-8deg);
+  pointer-events: none;
+}
+
+.premium-footer-grid {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr;
+  gap: 48px;
+  padding: 64px 28px 42px;
+}
+
+.footer-brand h3 {
+  font-size: 32px;
+  font-weight: 900;
+  margin-bottom: 16px;
+}
+
+.footer-brand h3::after {
+  content: "";
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  background: #f2b01e;
+  border-radius: 50%;
+  margin-left: 6px;
+}
+
+.footer-brand p {
+  color: rgba(255,255,255,.72);
+  line-height: 1.7;
+  max-width: 460px;
+}
+
+.footer-col h4 {
+  color: #facc15;
+  margin-bottom: 16px;
+  font-size: 17px;
+}
+
+.footer-col a {
+  display: block;
+  color: rgba(255,255,255,.72);
+  text-decoration: none;
+  margin-bottom: 12px;
+  font-weight: 600;
+  transition: .2s ease;
+}
+
+.footer-col a:hover {
+  color: #facc15;
+  transform: translateX(4px);
+}
+
+.footer-bottom {
+  position: relative;
+  z-index: 2;
+  padding: 20px 28px 28px;
+  border-top: 1px solid rgba(255,255,255,.1);
+  text-align: center;
+}
+
+.footer-bottom p {
+  color: rgba(255,255,255,.68);
+  font-size: 14px;
+}
+
+@media (max-width: 768px) {
+  .premium-footer {
+    margin-top: 60px;
+  }
+
+  .premium-footer-grid {
+    grid-template-columns: 1fr;
+    gap: 30px;
+    padding: 44px 24px 32px;
+  }
+
+  .premium-footer::before {
+    font-size: 30px;
+    letter-spacing: 22px;
+  }
+
+  .footer-brand h3 {
+    font-size: 28px;
+  }
+
+  .footer-bottom p {
+    font-size: 12px;
+  }
+}
+
+.footer-logo {
+  display: inline-flex;
+  align-items: center;
+  color: #fff;
+  text-decoration: none;
+  font-size: 34px;
+  font-weight: 900;
+  letter-spacing: -1px;
+  margin-bottom: 16px;
+}
+
+.footer-logo span {
+  width: 9px;
+  height: 9px;
+  background: #f2b01e;
+  border-radius: 999px;
+  margin-left: 6px;
+}
+
+.footer-powered {
+  display: inline-flex;
+  margin-top: 20px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: rgba(245,178,27,.12);
+  border: 1px solid rgba(245,178,27,.24);
+  color: rgba(255,255,255,.78);
+  font-size: 13px;
+}
+
+.footer-powered strong {
+  color: #facc15;
+  margin-left: 4px;
+}
+.brand-icon {
+  width: 70px;
+  height: 70px;
+  object-fit: contain;
+}

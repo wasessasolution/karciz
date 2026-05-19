@@ -1,6 +1,7 @@
 <?php
 session_start();
 include '../config.php';
+require_once __DIR__ . '/../lang/lang.php';
 
 if (!isset($_SESSION['user']) || $_SESSION['role'] != 'superadmin') {
     header("Location: ../login.php");

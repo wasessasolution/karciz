@@ -1,0 +1,465 @@
+/* ===============================
+   KARCIZ SUPERADMIN PREMIUM UI
+================================ */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #f5f7fb;
+  color: #0f172a;
+  font-family: Inter, "Segoe UI", Arial, sans-serif;
+}
+
+/* WRAPPER */
+.admin-wrapper {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  min-height: 100vh;
+  background: #f5f7fb;
+  transition: .28s ease;
+}
+
+/* SIDEBAR */
+.admin-sidebar {
+  width: 280px;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 28px 18px;
+  background:
+    radial-gradient(circle at top left, rgba(245,158,11,.18), transparent 28%),
+    linear-gradient(180deg, #07111f 0%, #0f172a 100%);
+  overflow-y: auto;
+  overflow-x: hidden;
+  transition: .28s ease;
+}
+
+.admin-sidebar-toggle {
+  position: fixed;
+  top: 24px;
+  left: 294px;
+  z-index: 99999;
+  width: 46px;
+  height: 46px;
+  border-radius: 15px;
+  border: none;
+  background: linear-gradient(135deg, #f2b01e, #c76a00);
+  color: #fff;
+  font-size: 22px;
+  font-weight: 900;
+  box-shadow: 0 16px 34px rgba(217,119,6,.32);
+  cursor: pointer;
+  transition: .28s ease;
+}
+
+.admin-sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 30px;
+  padding: 0 8px;
+}
+
+.admin-sidebar-brand img {
+  width: 126px;
+  height: auto;
+  object-fit: contain;
+}
+
+.admin-sidebar-brand span {
+  padding: 6px 11px;
+  border-radius: 999px;
+  background: rgba(245,178,27,.14);
+  border: 1px solid rgba(245,178,27,.28);
+  color: #facc15;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.admin-sidebar-menu {
+  flex: 1;
+}
+
+.admin-sidebar-menu a {
+  display: flex;
+  align-items: center;
+  min-height: 48px;
+  padding: 13px 16px;
+  margin-bottom: 8px;
+  border-radius: 15px;
+  color: rgba(255,255,255,.78);
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 800;
+  transition: .22s ease;
+}
+
+.admin-sidebar-menu a:hover {
+  background: rgba(255,255,255,.09);
+  color: #fff;
+  transform: translateX(4px);
+}
+
+.admin-sidebar-menu a.active {
+  background: linear-gradient(135deg, #f2b01e, #c76a00);
+  color: #fff;
+  box-shadow: 0 14px 30px rgba(217,119,6,.28);
+}
+
+.admin-sidebar-footer {
+  margin-top: 24px;
+  padding: 18px 16px;
+  border-radius: 22px;
+  background: rgba(255,255,255,.07);
+  border: 1px solid rgba(255,255,255,.1);
+}
+
+.admin-sidebar-footer strong {
+  display: block;
+  color: #fff;
+  font-size: 17px;
+  margin-bottom: 8px;
+}
+
+.admin-sidebar-footer p {
+  color: rgba(255,255,255,.72);
+  font-size: 12px;
+  margin-bottom: 5px;
+}
+
+.admin-sidebar-footer small {
+  color: #facc15;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+/* HIDDEN SIDEBAR */
+.admin-wrapper.admin-sidebar-hidden {
+  grid-template-columns: 1fr;
+}
+
+.admin-wrapper.admin-sidebar-hidden .admin-sidebar {
+  position: fixed;
+  left: -300px;
+}
+
+.admin-wrapper.admin-sidebar-hidden .admin-sidebar-toggle {
+  left: 24px;
+}
+
+.admin-wrapper.admin-sidebar-hidden .admin-main {
+  padding-left: 86px;
+}
+
+/* MAIN */
+.admin-main {
+  padding: 34px 34px 34px 56px;
+  background:
+    radial-gradient(circle at top right, rgba(245,158,11,.08), transparent 26%),
+    #f5f7fb;
+}
+
+/* TOPBAR */
+.admin-topbar {
+  min-height: 96px;
+  background: rgba(255,255,255,.96);
+  border: 1px solid #eef2f7;
+  border-radius: 28px;
+  padding: 26px 30px;
+  margin-bottom: 28px;
+  box-shadow: 0 18px 42px rgba(15,23,42,.06);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.admin-topbar h3 {
+  font-size: 30px;
+  font-weight: 900;
+  letter-spacing: -1px;
+  margin: 0 0 6px;
+}
+
+.admin-topbar p {
+  color: #64748b;
+  font-weight: 600;
+}
+
+.admin-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.admin-user span {
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.admin-user a {
+  padding: 12px 16px;
+  border-radius: 13px;
+  background: #dc2626;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 900;
+}
+
+/* CARDS */
+.admin-card-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 22px;
+  margin-bottom: 26px;
+}
+
+.admin-card {
+  position: relative;
+  overflow: hidden;
+  min-height: 142px;
+  background: #fff;
+  border: 1px solid #eef2f7;
+  border-radius: 28px;
+  padding: 28px;
+  box-shadow: 0 18px 42px rgba(15,23,42,.07);
+  transition: .22s ease;
+}
+
+.admin-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 24px 60px rgba(15,23,42,.1);
+}
+
+.admin-card::before {
+  content: "";
+  position: absolute;
+  right: -34px;
+  top: -34px;
+  width: 116px;
+  height: 116px;
+  border-radius: 999px;
+  background: rgba(242,176,30,.12);
+}
+
+.admin-card h4 {
+  color: #64748b;
+  font-size: 15px;
+  font-weight: 900;
+  margin-bottom: 18px;
+}
+
+.admin-card p {
+  font-size: 30px;
+  font-weight: 900;
+  letter-spacing: -1px;
+  color: #0f172a;
+}
+
+/* PANEL */
+.admin-panel {
+  background: #fff;
+  border: 1px solid #eef2f7;
+  border-radius: 28px;
+  padding: 30px;
+  box-shadow: 0 18px 42px rgba(15,23,42,.07);
+}
+
+.admin-panel-header {
+  margin-bottom: 22px;
+}
+
+.admin-panel-header h3 {
+  font-size: 24px;
+  font-weight: 900;
+  margin-bottom: 6px;
+}
+
+.admin-panel-header p {
+  color: #64748b;
+}
+
+.admin-finance-list {
+  display: grid;
+  gap: 14px;
+}
+
+.admin-finance-list div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+  padding: 18px 20px;
+  border-radius: 18px;
+  background: #f8fafc;
+  border: 1px solid #eef2f7;
+}
+
+.admin-finance-list span {
+  color: #334155;
+  font-weight: 700;
+}
+
+.admin-finance-list strong {
+  font-size: 18px;
+  color: #0f172a;
+}
+
+.admin-finance-list .highlight {
+  background: #fff7ed;
+  border-color: rgba(245,178,27,.28);
+}
+
+/* TABLE SUPPORT FOR OTHER PAGES */
+.table-container {
+  background: #fff;
+  border: 1px solid #eef2f7;
+  border-radius: 28px;
+  padding: 28px;
+  box-shadow: 0 18px 42px rgba(15,23,42,.07);
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 760px;
+}
+
+th {
+  padding: 16px 14px;
+  background: #f8fafc;
+  text-align: left;
+  font-weight: 900;
+  color: #0f172a;
+}
+
+td {
+  padding: 16px 14px;
+  border-bottom: 1px solid #eef2f7;
+  color: #334155;
+}
+
+/* MOBILE */
+@media (max-width: 1100px) {
+  .admin-card-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .admin-wrapper {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-sidebar {
+    position: fixed;
+    left: 0;
+    z-index: 9999;
+    height: 100vh;
+  }
+
+  .admin-wrapper.admin-sidebar-hidden .admin-sidebar {
+    left: -300px;
+  }
+
+  .admin-sidebar-toggle {
+    top: 18px;
+    left: 238px;
+  }
+
+  .admin-wrapper.admin-sidebar-hidden .admin-sidebar-toggle {
+    left: 18px;
+  }
+
+  .admin-main,
+  .admin-wrapper.admin-sidebar-hidden .admin-main {
+    padding: 84px 18px 24px;
+  }
+
+  .admin-topbar {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 24px;
+  }
+}
+
+@media (max-width: 600px) {
+  .admin-card-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-user {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .admin-finance-list div {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+/* SUPERADMIN SIDEBAR TOGGLE FIX */
+.admin-sidebar-toggle {
+  top: 24px !important;
+  left: 250px !important;
+  z-index: 100000 !important;
+}
+
+.admin-wrapper.admin-sidebar-hidden .admin-sidebar-toggle {
+  left: 24px !important;
+}
+
+.admin-main {
+  padding-left: 78px !important;
+}
+
+.admin-wrapper.admin-sidebar-hidden .admin-main {
+  padding-left: 96px !important;
+}
+
+/* supaya topbar tidak ketabrak tombol */
+.admin-topbar {
+  padding-left: 54px !important;
+}
+
+.admin-wrapper.admin-sidebar-hidden .admin-topbar {
+  padding-left: 30px !important;
+}
+
+@media (max-width: 900px) {
+  .admin-sidebar-toggle {
+    top: 18px !important;
+    left: 232px !important;
+  }
+
+  .admin-wrapper.admin-sidebar-hidden .admin-sidebar-toggle {
+    left: 18px !important;
+  }
+
+  .admin-main,
+  .admin-wrapper.admin-sidebar-hidden .admin-main {
+    padding: 84px 18px 24px !important;
+  }
+
+  .admin-topbar,
+  .admin-wrapper.admin-sidebar-hidden .admin-topbar {
+    padding-left: 24px !important;
+  }
+}
+.admin-sidebar-toggle {
+  position: fixed !important;
+  top: 24px !important;
+  left: 250px !important;
+  z-index: 999999 !important;
+  pointer-events: auto !important;
+}
+
+.admin-wrapper.admin-sidebar-hidden .admin-sidebar-toggle {
+  left: 24px !important;
+}

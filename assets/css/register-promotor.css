@@ -1,0 +1,344 @@
+/* ===============================
+   REGISTER PROMOTOR PREMIUM
+================================ */
+
+.promotor-register-page {
+  background: #f5f7fb;
+}
+
+.promotor-register-hero {
+  position: relative;
+  overflow: hidden;
+  min-height: calc(100vh - 86px);
+  padding: 86px 0;
+  background:
+    radial-gradient(circle at top left, rgba(245,158,11,.28), transparent 28%),
+    radial-gradient(circle at bottom right, rgba(245,158,11,.24), transparent 30%),
+    linear-gradient(135deg, #050816 0%, #0f172a 50%, #1c1230 100%);
+}
+
+.promotor-register-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle, rgba(255,214,102,.7) 1px, transparent 2px);
+  background-size: 54px 54px;
+  opacity: .11;
+}
+
+.promotor-pattern {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: .16;
+}
+
+.promotor-pattern span {
+  position: absolute;
+  color: #f5b21b;
+  font-size: 48px;
+  font-weight: 900;
+  animation: promotorFloat 6s ease-in-out infinite;
+}
+
+.promotor-pattern span:nth-child(1) { top: 12%; left: 8%; }
+.promotor-pattern span:nth-child(2) { top: 20%; right: 12%; }
+.promotor-pattern span:nth-child(3) { bottom: 18%; left: 14%; }
+.promotor-pattern span:nth-child(4) { bottom: 12%; right: 18%; }
+.promotor-pattern span:nth-child(5) { top: 50%; right: 8%; }
+.promotor-pattern span:nth-child(6) { top: 62%; left: 44%; }
+
+.promotor-register-layout {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 1fr 560px;
+  gap: 54px;
+  align-items: center;
+}
+
+.promotor-copy {
+  color: #fff;
+  max-width: 650px;
+  animation: promotorFadeUp .55s ease both;
+}
+
+.promotor-badge {
+  display: inline-flex;
+  padding: 10px 18px;
+  border-radius: 999px;
+  background: rgba(245,178,27,.14);
+  border: 1px solid rgba(245,178,27,.42);
+  color: #facc15;
+  font-weight: 900;
+  margin-bottom: 24px;
+}
+
+.promotor-copy h1 {
+  font-size: clamp(42px, 5vw, 68px);
+  line-height: 1.05;
+  letter-spacing: -2px;
+  margin-bottom: 24px;
+}
+
+.promotor-copy p {
+  color: rgba(255,255,255,.76);
+  font-size: 18px;
+  line-height: 1.8;
+  max-width: 620px;
+}
+
+.promotor-benefits {
+  display: grid;
+  gap: 14px;
+  margin-top: 34px;
+  max-width: 520px;
+}
+
+.promotor-benefits div {
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: 20px;
+  padding: 18px 20px;
+  backdrop-filter: blur(12px);
+}
+
+.promotor-benefits strong {
+  display: block;
+  color: #facc15;
+  margin-bottom: 5px;
+}
+
+.promotor-benefits span {
+  color: rgba(255,255,255,.72);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.promotor-form-card {
+  background: rgba(255,255,255,.98);
+  border: 1px solid rgba(245,178,27,.28);
+  border-radius: 34px;
+  padding: 34px;
+  box-shadow: 0 32px 80px rgba(0,0,0,.32);
+  animation: promotorCardIn .65s ease both;
+}
+
+.form-header {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding-bottom: 24px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid #eef2f7;
+}
+
+.form-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #facc15, #d97706);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  font-weight: 900;
+  font-family: Georgia, serif;
+  box-shadow: 0 18px 34px rgba(217,119,6,.3);
+}
+
+.form-header h2 {
+  font-size: 26px;
+  letter-spacing: -.5px;
+  margin-bottom: 4px;
+}
+
+.form-header p {
+  color: #64748b;
+  line-height: 1.5;
+}
+
+.promotor-alert {
+  padding: 14px 16px;
+  border-radius: 16px;
+  font-weight: 800;
+  margin-bottom: 18px;
+}
+
+.promotor-alert.success {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.promotor-alert.error {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.promotor-form {
+  display: grid;
+  gap: 18px;
+}
+
+.promotor-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.promotor-form-group label {
+  display: block;
+  margin-bottom: 9px;
+  font-weight: 900;
+  color: #0f172a;
+}
+
+.promotor-form-group input,
+.promotor-form-group textarea {
+  width: 100%;
+  border: 1px solid #d1d5db;
+  border-radius: 16px;
+  padding: 0 16px;
+  font-size: 15px;
+  outline: none;
+  background: #fff;
+  font-family: inherit;
+  transition: .22s ease;
+}
+
+.promotor-form-group input {
+  height: 54px;
+}
+
+.promotor-form-group textarea {
+  padding-top: 14px;
+  resize: vertical;
+  min-height: 110px;
+}
+
+.promotor-form-group input:focus,
+.promotor-form-group textarea:focus {
+  border-color: #f2b01e;
+  box-shadow: 0 0 0 4px rgba(245,158,11,.14);
+}
+
+.promotor-submit-btn {
+  width: 100%;
+  height: 58px;
+  border: none;
+  border-radius: 17px;
+  background: linear-gradient(135deg, #f2b01e, #c76a00);
+  color: #fff;
+  font-weight: 900;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0 16px 34px rgba(217,119,6,.3);
+  transition: .22s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.promotor-submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 22px 42px rgba(217,119,6,.38);
+}
+
+.promotor-submit-btn span {
+  font-size: 20px;
+}
+
+.promotor-note {
+  text-align: center;
+  color: #64748b;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+@keyframes promotorFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes promotorCardIn {
+  from {
+    opacity: 0;
+    transform: translateY(28px) scale(.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes promotorFloat {
+  0%, 100% {
+    margin-top: 0;
+  }
+  50% {
+    margin-top: -12px;
+  }
+}
+
+@media (max-width: 1000px) {
+  .promotor-register-layout {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+
+  .promotor-copy {
+    text-align: center;
+    margin: 0 auto;
+  }
+
+  .promotor-benefits {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .promotor-form-card {
+    max-width: 620px;
+    width: 100%;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 640px) {
+  .promotor-register-hero {
+    padding: 48px 0;
+  }
+
+  .promotor-copy h1 {
+    font-size: 36px;
+  }
+
+  .promotor-copy p {
+    font-size: 15px;
+  }
+
+  .promotor-form-card {
+    padding: 24px;
+    border-radius: 28px;
+  }
+
+  .form-header {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .promotor-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .promotor-pattern span {
+    font-size: 30px;
+  }
+}

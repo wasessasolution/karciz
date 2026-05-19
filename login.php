@@ -1,6 +1,7 @@
 <?php
 session_start();
 include 'config.php';
+require_once __DIR__ . '/lang/lang.php';
 
 $error = "";
 
@@ -37,6 +38,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     header("Location: super-admin/dashboard.php");
                 } elseif ($user['role'] === 'organizer') {
                     header("Location: organizer/dashboard.php");
+                } elseif ($user['role'] === 'staff_gate') {
+                    header("Location: organizer/ticket-tracking.php");
                 } else {
                     header("Location: index.php");
                 }
@@ -52,75 +55,79 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Karciz - Login</title>
-  <link rel="stylesheet" href="assets/css/style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KarciZ - Login</title>
+  <link rel="stylesheet" href="assets/css/login.css?v=2">
 </head>
 <body>
 
 <section class="login-page">
-  <div class="login-container modern-login">
-    <h1>Masuk</h1>
-    <p class="subtitle">
-      Login menggunakan username dan password Anda
-    </p>
+
+  <div class="pattern-layer">
+    <?php for ($i = 0; $i < 34; $i++): ?>
+      <span><?= ['🎟', '🎫', '★', '♫', '🎤', 'K', '✦'][$i % 7]; ?></span>
+    <?php endfor; ?>
+  </div>
+
+  <div class="login-card">
+
+    <img src="/Karciz/assets/images/logo/logo.png" alt="KarciZ" class="brand-icon">
+
+    <h1>Masuk KarciZ</h1>
+    <p class="login-subtitle">Login untuk membeli tiket dan mengakses akun Anda</p>
 
     <?php if ($error != "") { ?>
-      <p style="color:red;"><?php echo $error; ?></p>
+      <div class="error-box">
+        <?= htmlspecialchars($error); ?>
+      </div>
     <?php } ?>
 
-    <!-- FORM LOGIN -->
+    <button type="button" class="google-btn" onclick="alert('Google login belum diaktifkan');">
+      <span>G</span>
+      Lanjutkan dengan Google
+    </button>
+
+    <div class="divider">
+      <span></span>
+      <p>ATAU</p>
+      <span></span>
+    </div>
+
     <form method="POST" class="login-form">
 
-      <div class="form-group">
-        <label>Username</label>
-        <input
-          type="text"
-          name="username"
-          placeholder="Masukkan username"
-          required
-        />
+      <div class="input-box">
+        <span>👤</span>
+        <input type="text" name="username" placeholder="Email atau Username" required>
       </div>
 
-      <div class="form-group">
-        <label>Password</label>
-        <input
-          type="password"
-          name="password"
-          placeholder="Masukkan password"
-          required
-        />
+      <div class="input-box">
+        <span>🔒</span>
+        <input type="password" name="password" placeholder="Password" required>
       </div>
 
-      <button type="submit" class="btn-login">
-        Login
+      <button type="submit" class="login-btn">
+        Login <span>→</span>
       </button>
 
     </form>
 
-    <!-- REGISTER -->
-    <p style="margin-top:15px; text-align:center;">
+    <p class="register-text">
       Belum punya akun?
-      <a href="register.php">Daftar di sini</a>
+      <a href="register.php">Daftar saja</a>
     </p>
 
   </div>
+
+  <div class="login-credit">
+    © 2026 KarciZ • Powered by Wasessa Solution Tech
+  </div>
+
 </section>
-
-<!-- Footer -->
-<div id="footer"></div>
-
-<script>
-  fetch('components/footer.php')
-    .then(response => response.text())
-    .then(data => {
-      document.getElementById('footer').innerHTML = data;
-    });
-</script>
 
 </body>
 </html>

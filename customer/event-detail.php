@@ -1,6 +1,7 @@
 <?php
 session_start();
 include '../config.php';
+require_once __DIR__ . '/../lang/lang.php';
 
 if (!isset($_SESSION['user'])) {
     header("Location: ../login.php");
@@ -14,7 +15,7 @@ if (!isset($_GET['id'])) {
 
 $event_id = intval($_GET['id']);
 
-// Ambil event
+/* Ambil event */
 $stmt = $conn->prepare("
     SELECT events.*, promotor.nama_brand
     FROM events
@@ -31,7 +32,12 @@ if (!$event) {
     exit;
 }
 
-// Ambil tiket event
+/* Cek event expired */
+$jam_selesai = !empty($event['jam_selesai']) ? $event['jam_selesai'] : '23:59:59';
+$event_end = strtotime($event['tanggal'] . ' ' . $jam_selesai);
+$event_expired = time() > $event_end || $event['status'] === 'selesai';
+
+/* Ambil tiket event */
 $stmt = $conn->prepare("
     SELECT * FROM tickets
     WHERE event_id = ?
@@ -47,7 +53,9 @@ $tickets = $stmt->get_result();
 <head>
     <meta charset="UTF-8">
     <title><?= htmlspecialchars($event['nama_event']); ?> - KarciZ</title>
-    <link rel="stylesheet" href="/Karciz/assets/css/style.css?v=4">
+      <link rel="stylesheet" href="/Karciz/assets/css/style.css?v=1">
+      <link rel="stylesheet" href="/Karciz/assets/css/navbar.css?v=5">
+      <link rel="stylesheet" href="/Karciz/assets/css/footer.css?v=1">
 </head>
 <body>
 
@@ -94,54 +102,65 @@ $tickets = $stmt->get_result();
             <div class="ticket-list-card">
               <h2>Pilih Tiket</h2>
 
-              <?php if ($tickets->num_rows > 0) { ?>
-                <form action="checkout.php" method="POST" id="ticketForm">
+              <?php if ($event_expired): ?>
 
-                  <input type="hidden" name="event_id" value="<?= $event_id; ?>">
-                  <input type="hidden" name="ticket_id" id="selectedTicketId">
+                <div class="event-card" style="padding:24px; margin-top:20px;">
+                  <h3>Event Sudah Selesai</h3>
+                  <p>Penjualan tiket telah ditutup.</p>
+                </div>
 
-                  <?php while ($ticket = $tickets->fetch_assoc()) { ?>
-                    <div class="ticket-option <?= $ticket['stok'] <= 0 ? 'ticket-disabled' : ''; ?>">
+              <?php else: ?>
 
-                      <label class="ticket-radio-area">
-                        <input 
-                          type="radio"
-                          name="ticket_choice"
-                          value="<?= $ticket['id']; ?>"
-                          data-stok="<?= $ticket['stok']; ?>"
-                          <?= $ticket['stok'] <= 0 ? 'disabled' : ''; ?>
-                        >
+                <?php if ($tickets->num_rows > 0) { ?>
+                  <form action="checkout.php" method="POST" id="ticketForm">
 
-                        <div>
-                          <h3><?= htmlspecialchars($ticket['nama_tiket']); ?></h3>
-                          <p>Stok tersedia: <?= $ticket['stok']; ?></p>
-                          <strong>Rp <?= number_format($ticket['harga'], 0, ',', '.'); ?></strong>
-                        </div>
-                      </label>
+                    <input type="hidden" name="event_id" value="<?= $event_id; ?>">
+                    <input type="hidden" name="ticket_id" id="selectedTicketId">
 
+                    <?php while ($ticket = $tickets->fetch_assoc()) { ?>
+                      <div class="ticket-option <?= $ticket['stok'] <= 0 ? 'ticket-disabled' : ''; ?>">
+
+                        <label class="ticket-radio-area">
+                          <input 
+                            type="radio"
+                            name="ticket_choice"
+                            value="<?= $ticket['id']; ?>"
+                            data-stok="<?= $ticket['stok']; ?>"
+                            <?= $ticket['stok'] <= 0 ? 'disabled' : ''; ?>
+                          >
+
+                          <div>
+                            <h3><?= htmlspecialchars($ticket['nama_tiket']); ?></h3>
+                            <p>Stok tersedia: <?= $ticket['stok']; ?></p>
+                            <strong>Rp <?= number_format($ticket['harga'], 0, ',', '.'); ?></strong>
+                          </div>
+                        </label>
+
+                      </div>
+                    <?php } ?>
+
+                    <div class="qty-box">
+                      <label>Jumlah Tiket</label>
+                      <input 
+                        type="number" 
+                        name="qty" 
+                        id="ticketQty"
+                        min="1"
+                        value="0"
+                        disabled
+                      >
                     </div>
-                  <?php } ?>
 
-                  <div class="qty-box">
-                    <label>Jumlah Tiket</label>
-                    <input 
-                      type="number" 
-                      name="qty" 
-                      id="ticketQty"
-                      min="1"
-                      value="0"
-                      disabled
-                    >
-                  </div>
+                    <button type="submit" class="btn-login" id="checkoutBtn" disabled>
+                      Lanjut Checkout
+                    </button>
 
-                  <button type="submit" class="btn-login" id="checkoutBtn" disabled>
-                    Lanjut Checkout
-                  </button>
+                  </form>
+                <?php } else { ?>
+                  <p>Belum ada tiket tersedia untuk event ini.</p>
+                <?php } ?>
 
-                </form>
-              <?php } else { ?>
-                <p>Belum ada tiket tersedia untuk event ini.</p>
-              <?php } ?>
+              <?php endif; ?>
             </div>
 
         </div>
@@ -161,22 +180,39 @@ $tickets = $stmt->get_result();
       const stok = parseInt(this.dataset.stok);
 
       selectedTicketId.value = this.value;
-
       qtyInput.disabled = false;
-      qtyInput.value = 1;
+      qtyInput.min = 1;
       qtyInput.max = stok;
+      qtyInput.value = 1;
 
       checkoutBtn.disabled = false;
     });
   });
 
   qtyInput.addEventListener('input', function () {
-    const qty = parseInt(this.value);
+    let qty = parseInt(this.value);
+    const max = parseInt(this.max);
 
-    if (!selectedTicketId.value || qty < 1) {
-      checkoutBtn.disabled = true;
-    } else {
-      checkoutBtn.disabled = false;
+    if (isNaN(qty) || qty < 1) {
+      this.value = 1;
+      qty = 1;
+    }
+
+    if (qty > max) {
+      this.value = max;
+      qty = max;
+    }
+
+    checkoutBtn.disabled = !selectedTicketId.value || qty < 1 || qty > max;
+  });
+
+  document.getElementById('ticketForm')?.addEventListener('submit', function(e) {
+    const qty = parseInt(qtyInput.value);
+    const max = parseInt(qtyInput.max);
+
+    if (!selectedTicketId.value || qty < 1 || qty > max) {
+      e.preventDefault();
+      alert('Pilih tiket dan jumlah tiket yang valid.');
     }
   });
 </script>

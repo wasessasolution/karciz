@@ -1,8 +1,8 @@
 <?php
 session_start();
 include '../config.php';
+require_once __DIR__ . '/../lang/lang.php';
 
-// 🔐 PROTEKSI
 if (!isset($_SESSION['user'])) {
     header("Location: ../login.php");
     exit;
@@ -10,136 +10,284 @@ if (!isset($_SESSION['user'])) {
 
 $username = $_SESSION['user'];
 
-// 🔥 AMBIL DATA USER
-$stmt = $conn->prepare("SELECT * FROM users WHERE username=?");
+$stmt = $conn->prepare("SELECT * FROM users WHERE username=? LIMIT 1");
 $stmt->bind_param("s", $username);
 $stmt->execute();
-$result = $stmt->get_result();
-$user = $result->fetch_assoc();
+$user = $stmt->get_result()->fetch_assoc();
+
+if (!$user) {
+    header("Location: ../logout.php");
+    exit;
+}
 
 $success = "";
 $error = "";
 
-// 🔥 HANDLE UPDATE
 if (isset($_POST['update'])) {
 
-    $email = $_POST['email'];
-    $no_wa = $_POST['no_whatsapp'];
+    $email = trim($_POST['email']);
+    $no_wa = trim($_POST['no_whatsapp']);
+    $foto = $user['profile_image'] ?: 'default-profile.png';
 
-    // upload foto
-    $foto = $user['profile_image'];
+    $old_password = $_POST['old_password'] ?? '';
+    $new_password = $_POST['new_password'] ?? '';
+    $confirm_password = $_POST['confirm_password'] ?? '';
 
     if (!empty($_FILES['foto']['name'])) {
-        $file_name = time() . '_' . $_FILES['foto']['name'];
-        $tmp = $_FILES['foto']['tmp_name'];
-        $path = "../assets/images/profile/" . $file_name;
+        $allowed = ['jpg', 'jpeg', 'png', 'webp'];
+        $ext = strtolower(pathinfo($_FILES['foto']['name'], PATHINFO_EXTENSION));
 
-        move_uploaded_file($tmp, $path);
-        $foto = $file_name;
+        if (!in_array($ext, $allowed)) {
+            $error = "Format foto harus JPG, JPEG, PNG, atau WEBP.";
+        } else {
+            $file_name = 'profile_' . time() . '_' . uniqid() . '.' . $ext;
+            $tmp = $_FILES['foto']['tmp_name'];
+            $path = "../assets/images/profile/" . $file_name;
+
+            if (move_uploaded_file($tmp, $path)) {
+                $foto = $file_name;
+            } else {
+                $error = "Upload foto gagal.";
+            }
+        }
     }
 
-    // update ke DB
-    $stmt = $conn->prepare("UPDATE users SET email=?, no_whatsapp=?, profile_image=? WHERE username=?");
-    $stmt->bind_param("ssss", $email, $no_wa, $foto, $username);
+    $hashed_password = "";
 
-    if ($stmt->execute()) {
-        $success = "Profil berhasil diperbarui!";
-        $_SESSION['user'] = $username;
-        header("Refresh:1");
-    } else {
-        $error = "Gagal update!";
+    if ($old_password !== '' || $new_password !== '' || $confirm_password !== '') {
+
+        if ($old_password === '' || $new_password === '' || $confirm_password === '') {
+            $error = "Semua kolom password wajib diisi jika ingin mengganti password.";
+        } elseif (!password_verify($old_password, $user['password'])) {
+            $error = "Password lama tidak sesuai.";
+        } elseif ($new_password !== $confirm_password) {
+            $error = "Konfirmasi password baru tidak sama.";
+        } elseif (strlen($new_password) < 6) {
+            $error = "Password baru minimal 6 karakter.";
+        } else {
+            $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
+        }
+    }
+
+    if (!$error) {
+
+        if ($hashed_password !== "") {
+            $stmt = $conn->prepare("
+                UPDATE users 
+                SET email=?, no_whatsapp=?, profile_image=?, password=?
+                WHERE username=?
+            ");
+            $stmt->bind_param("sssss", $email, $no_wa, $foto, $hashed_password, $username);
+        } else {
+            $stmt = $conn->prepare("
+                UPDATE users 
+                SET email=?, no_whatsapp=?, profile_image=? 
+                WHERE username=?
+            ");
+            $stmt->bind_param("ssss", $email, $no_wa, $foto, $username);
+        }
+
+        if ($stmt->execute()) {
+            header("Location: profile.php?success=1");
+            exit;
+        } else {
+            $error = "Gagal update profil.";
+        }
     }
 }
+
+if (isset($_GET['success'])) {
+    $success = "Profil berhasil diperbarui.";
+}
+
+$profile_img = !empty($user['profile_image']) ? $user['profile_image'] : 'default-profile.png';
 ?>
 
 <!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Profile - KarciZ</title>
-  <link rel="stylesheet" href="../assets/css/style.css">
 
-  <style>
-    .profile-container {
-      max-width: 500px;
-      margin: 50px auto;
-      background: #fff;
-      padding: 20px;
-      border-radius: 10px;
-    }
-
-    .profile-img {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    .profile-img img {
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      object-fit: cover;
-    }
-
-    .form-group {
-      margin-bottom: 15px;
-    }
-
-    input {
-      width: 100%;
-      padding: 10px;
-    }
-
-    .btn-save {
-      background: #2f3640;
-      color: #fff;
-      border: none;
-      padding: 10px;
-      width: 100%;
-      cursor: pointer;
-    }
-  </style>
-
+  <link rel="stylesheet" href="/Karciz/assets/css/style.css?v=1">
+  <link rel="stylesheet" href="/Karciz/assets/css/navbar.css?v=5">
+  <link rel="stylesheet" href="/Karciz/assets/css/footer.css?v=1">
+  <link rel="stylesheet" href="/Karciz/assets/css/profile.css?v=3">
 </head>
 <body>
 
-<div class="profile-container">
+<?php include '../components/navbar.php'; ?>
 
-  <h2>Profil Saya</h2>
+<main class="profile-page">
 
-  <?php if ($success) echo "<p style='color:green'>$success</p>"; ?>
-  <?php if ($error) echo "<p style='color:red'>$error</p>"; ?>
-
-  <form method="POST" enctype="multipart/form-data">
-
-    <div class="profile-img">
-      <img src="../assets/images/profile/<?php echo $user['profile_image'] ?? 'default-profile.png'; ?>">
+  <section class="profile-hero">
+    <div class="profile-pattern">
+      <span>🎟</span>
+      <span>★</span>
+      <span>K</span>
+      <span>🎫</span>
+      <span>♫</span>
     </div>
 
-    <div class="form-group">
-      <label>Ganti Foto</label>
-      <input type="file" name="foto">
+    <div class="container">
+      <div class="profile-layout">
+
+        <div class="profile-intro">
+          <div class="profile-badge">My Account</div>
+          <h1>Profil Saya</h1>
+          <p>
+            Kelola informasi akun, foto profil, email, nomor WhatsApp,
+            dan password agar data tiket KarciZ tetap aman dan terbaru.
+          </p>
+        </div>
+
+        <div class="profile-card">
+
+          <?php if ($success): ?>
+            <div class="profile-alert success"><?= htmlspecialchars($success); ?></div>
+          <?php endif; ?>
+
+          <?php if ($error): ?>
+            <div class="profile-alert error"><?= htmlspecialchars($error); ?></div>
+          <?php endif; ?>
+
+          <form method="POST" enctype="multipart/form-data">
+
+            <div class="profile-avatar-box">
+              <img 
+                src="/Karciz/assets/images/profile/<?= htmlspecialchars($profile_img); ?>" 
+                alt="Profile"
+                class="profile-avatar"
+              >
+
+              <div>
+                <h3><?= htmlspecialchars($user['username']); ?></h3>
+                <p>Customer KarciZ</p>
+
+                <label class="upload-btn">
+                  Ganti Foto
+                  <input type="file" name="foto" accept="image/*">
+                </label>
+              </div>
+            </div>
+
+            <div class="profile-form-grid">
+
+              <div class="profile-form-group">
+                <label>Username</label>
+                <input 
+                  type="text" 
+                  value="<?= htmlspecialchars($user['username']); ?>" 
+                  disabled
+                >
+              </div>
+
+              <div class="profile-form-group">
+                <label>Email</label>
+                <input 
+                  type="email" 
+                  name="email" 
+                  value="<?= htmlspecialchars($user['email']); ?>" 
+                  required
+                >
+              </div>
+
+              <div class="profile-form-group full">
+                <label>No WhatsApp</label>
+                <input 
+                  type="text" 
+                  name="no_whatsapp" 
+                  value="<?= htmlspecialchars($user['no_whatsapp'] ?? ''); ?>"
+                  placeholder="Contoh: 08123456789"
+                >
+              </div>
+
+            </div>
+
+            <div class="password-toggle-box">
+              <button type="button" class="password-toggle-btn" id="togglePasswordPanel">
+                Ganti Password
+                <span>+</span>
+              </button>
+            </div>
+
+            <div class="password-panel" id="passwordPanel">
+              <h3>Ganti Password</h3>
+              <p>Kosongkan bagian ini jika tidak ingin mengganti password.</p>
+
+              <div class="profile-form-group">
+                <label>Password Lama</label>
+                <input 
+                  type="password" 
+                  name="old_password" 
+                  placeholder="Masukkan password lama"
+                >
+              </div>
+
+              <div class="profile-form-group">
+                <label>Password Baru</label>
+                <input 
+                  type="password" 
+                  name="new_password" 
+                  placeholder="Minimal 6 karakter"
+                >
+              </div>
+
+              <div class="profile-form-group">
+                <label>Konfirmasi Password Baru</label>
+                <input 
+                  type="password" 
+                  name="confirm_password" 
+                  placeholder="Ulangi password baru"
+                >
+              </div>
+            </div>
+
+            <button type="submit" name="update" class="profile-save-btn">
+              Simpan Perubahan
+            </button>
+
+            <a href="/Karciz/index.php" class="profile-back-btn">
+              Kembali ke Beranda
+            </a>
+
+          </form>
+
+        </div>
+
+      </div>
     </div>
+  </section>
 
-    <div class="form-group">
-      <label>Username</label>
-      <input type="text" value="<?php echo $user['username']; ?>" disabled>
-    </div>
+</main>
 
-    <div class="form-group">
-      <label>Email</label>
-      <input type="email" name="email" value="<?php echo $user['email']; ?>" required>
-    </div>
+<?php include '../components/footer.php'; ?>
 
-    <div class="form-group">
-      <label>No WhatsApp</label>
-      <input type="text" name="no_whatsapp" value="<?php echo $user['no_whatsapp']; ?>">
-    </div>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const toggleBtn = document.getElementById("togglePasswordPanel");
+  const panel = document.getElementById("passwordPanel");
 
-    <button type="submit" name="update" class="btn-save">Simpan Perubahan</button>
+  if (!toggleBtn || !panel) return;
 
-  </form>
+  toggleBtn.addEventListener("click", function () {
+    panel.classList.toggle("show");
 
-</div>
+    const icon = toggleBtn.querySelector("span");
+
+    if (panel.classList.contains("show")) {
+      icon.textContent = "−";
+    } else {
+      icon.textContent = "+";
+
+      panel.querySelectorAll("input").forEach(input => {
+        input.value = "";
+      });
+    }
+  });
+});
+</script>
 
 </body>
 </html>
